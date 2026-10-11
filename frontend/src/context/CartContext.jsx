@@ -16,7 +16,9 @@ export function CartProvider({ children }) {
   }, []);
 
   // Reload whenever the user logs in or out (login merges the guest cart server-side).
-  useEffect(refresh, [refresh, user?.id]);
+  useEffect(() => {
+    refresh();
+  }, [refresh, user?.id]);
 
   const run = useCallback(async (fn) => {
     setBusy(true);

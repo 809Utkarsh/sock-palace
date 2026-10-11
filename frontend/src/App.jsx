@@ -15,7 +15,11 @@ import NotFound from './pages/NotFound';
 
 export default function App() {
   const { pathname } = useLocation();
-  useEffect(() => window.scrollTo(0, 0), [pathname]);
+  // Block body on purpose: newer browsers make scrollTo() return a Promise, and React
+  // would try to call any returned value as a cleanup function.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <div className="flex min-h-screen flex-col">
