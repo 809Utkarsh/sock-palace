@@ -9,6 +9,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script>
+      // After a new deploy, a tab opened earlier may request old /assets/ files that no longer
+      // exist. Instead of leaving a blank page, reload once to pick up the new version.
+      window.addEventListener('error', function (e) {
+        var t = e.target;
+        if (!t || (t.tagName !== 'SCRIPT' && t.tagName !== 'LINK')) return;
+        if (t.src ? t.src.indexOf('/assets/') === -1 : (t.href || '').indexOf('/assets/') === -1) return;
+        try {
+          if (sessionStorage.getItem('assetReload')) return;
+          sessionStorage.setItem('assetReload', '1');
+        } catch (_) {}
+        location.reload();
+      }, true);
+      window.addEventListener('load', function () {
+        setTimeout(function () { try { sessionStorage.removeItem('assetReload'); } catch (_) {} }, 5000);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
