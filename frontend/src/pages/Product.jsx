@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { api, formatPrice } from '../api';
 import { TAG_LABELS } from '../collections';
 import { useCart } from '../context/CartContext';
-import ProductCarousel from '../components/ProductCarousel';
-import { useProducts } from '../useProducts';
 import NotFound from './NotFound';
 
 const SIZE_GUIDE = { S: 'UK 3-5', M: 'UK 6-8', L: 'UK 9-11' };
@@ -18,7 +16,6 @@ export default function Product() {
   const [size, setSize] = useState('');
   const [qty, setQty] = useState(1);
   const [error, setError] = useState('');
-  const related = useProducts(product ? `?category=${product.category}` : '');
 
   useEffect(() => {
     setStatus('loading');
@@ -35,8 +32,11 @@ export default function Product() {
   }, [slug]);
 
   if (status === 'missing') return <NotFound />;
-  if (status === 'loading' || !product)
-    return <p className="py-32 text-center text-sm uppercase tracking-widest text-muted">{status === 'error' ? 'Could not load product' : 'Loading…'}</p>;
+  if (status !== 'ok' || !product) {
+    return (
+      <p className="caps py-40 text-center text-muted">{status === 'error' ? 'Could not load product' : 'Loading…'}</p>
+    );
+  }
 
   const addToCart = async () => {
     if (!size) return setError('Please select a size');
@@ -48,113 +48,83 @@ export default function Product() {
     }
   };
 
+  const badge = product.tag ? TAG_LABELS[product.tag] : product.compare_at_price ? 'Sale' : null;
+
   return (
-    <>
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 md:grid-cols-2 md:gap-14 md:px-8 md:py-14">
-        {/* Gallery */}
-        <div className="flex flex-col-reverse gap-3 md:flex-row">
-          <div className="flex gap-3 md:flex-col">
+    <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-6 md:grid-cols-2 md:gap-10 md:px-8 md:pt-20">
+      {/* Gallery: framed main image + thumbnails */}
+      <div>
+        <div className="relative aspect-square border border-line">
+          <img src={product.images[image]} alt={product.name} className="absolute inset-0 h-full w-full object-contain p-[10%]" />
+        </div>
+        {product.images.length > 1 && (
+          <div className="mt-3 flex gap-3">
             {product.images.map((src, i) => (
               <button
                 key={src}
                 onClick={() => setImage(i)}
-                className={`w-20 border-2 ${i === image ? 'border-ink' : 'border-transparent'}`}
+                className={`aspect-square w-20 border ${i === image ? 'border-fg' : 'border-line/30 hover:border-line/70'}`}
+                aria-label={`Image ${i + 1}`}
               >
-                <img src={src} alt="" className="aspect-[4/5] w-full object-cover" />
+                <img src={src} alt="" className="h-full w-full object-contain p-2" />
               </button>
             ))}
           </div>
-          <img src={product.images[image]} alt={product.name} className="aspect-[4/5] w-full flex-1 bg-white object-cover" />
-        </div>
-
-        {/* Details */}
-        <div className="md:sticky md:top-28 md:self-start">
-          <nav className="text-[11px] uppercase tracking-widest text-muted">
-            <Link to="/" className="hover:text-ink">Home</Link> / <Link to="/collections/all" className="hover:text-ink">Shop</Link> / {product.name}
-          </nav>
-          {product.tag && (
-            <span className="mt-4 inline-block bg-ink px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
-              {TAG_LABELS[product.tag]}
-            </span>
-          )}
-          <h1 className="mt-3 font-display text-4xl uppercase leading-none md:text-6xl">{product.name}</h1>
-          <div className="mt-4 flex items-center gap-3 text-xl">
-            <span className="font-semibold">{formatPrice(product.price)}</span>
-            {product.compare_at_price && (
-              <span className="text-muted line-through">{formatPrice(product.compare_at_price)}</span>
-            )}
-          </div>
-          <p className="mt-1 text-xs text-muted">Tax included. Free shipping.</p>
-
-          <div className="mt-8">
-            <p className="text-xs font-bold uppercase tracking-widest">
-              Size {size && <span className="font-normal text-muted">: {size} ({SIZE_GUIDE[size] || ''})</span>}
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {product.sizes.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => {
-                    setSize(s);
-                    setError('');
-                  }}
-                  className={`h-12 min-w-14 border px-4 text-sm font-semibold ${
-                    size === s ? 'border-ink bg-ink text-white' : 'border-ink/25 hover:border-ink'
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <p className="text-xs font-bold uppercase tracking-widest">Quantity</p>
-            <div className="mt-3 flex w-fit items-center border border-ink/25">
-              <button className="px-4 py-3" onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Decrease">−</button>
-              <span className="w-10 text-center">{qty}</span>
-              <button className="px-4 py-3" onClick={() => setQty(Math.min(10, qty + 1))} aria-label="Increase">+</button>
-            </div>
-          </div>
-
-          {error && <p className="mt-4 text-sm text-brand">{error}</p>}
-          <button
-            onClick={addToCart}
-            disabled={busy}
-            className="mt-6 w-full bg-ink py-4 text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:bg-brand disabled:opacity-60"
-          >
-            {busy ? 'Adding…' : 'Add to Cart'}
-          </button>
-
-          <div className="mt-8 divide-y divide-ink/10 border-y border-ink/10">
-            <details open className="py-4">
-              <summary className="cursor-pointer list-none text-xs font-bold uppercase tracking-widest">Description</summary>
-              <p className="mt-3 text-sm leading-relaxed text-ink/80">{product.description}</p>
-            </details>
-            <details className="py-4">
-              <summary className="cursor-pointer list-none text-xs font-bold uppercase tracking-widest">Size Guide</summary>
-              <ul className="mt-3 text-sm text-ink/80">
-                {Object.entries(SIZE_GUIDE).map(([k, v]) => (
-                  <li key={k}>{k}: {v}</li>
-                ))}
-              </ul>
-            </details>
-            <details className="py-4">
-              <summary className="cursor-pointer list-none text-xs font-bold uppercase tracking-widest">Shipping</summary>
-              <p className="mt-3 text-sm text-ink/80">
-                We're just getting started. Orders are confirmed instantly and delivered to your doorstep soon.
-              </p>
-            </details>
-          </div>
-        </div>
+        )}
       </div>
 
-      {related.products.length > 1 && (
-        <ProductCarousel
-          title="You May Also Like"
-          products={related.products.filter((p) => p.id !== product.id)}
-        />
-      )}
-    </>
+      {/* Details */}
+      <div className="max-w-md md:sticky md:top-8 md:self-start">
+        <h1 className="display text-xl leading-snug md:text-[22px]">{product.name}</h1>
+        {badge && <span className="pill mt-3 bg-fg text-black">{badge}</span>}
+        <div className="mt-4 flex items-center gap-3 text-lg tracking-wide">
+          <span>{formatPrice(product.price)}</span>
+          {product.compare_at_price && <span className="text-base text-muted line-through">{formatPrice(product.compare_at_price)}</span>}
+        </div>
+
+        <p className="caps mt-6 text-lg tracking-[0.06em]">Size</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {product.sizes.map((s) => (
+            <button
+              key={s}
+              onClick={() => {
+                setSize(s);
+                setError('');
+              }}
+              className={`h-10 min-w-12 border px-3 text-sm font-medium tracking-wider ${
+                size === s ? 'border-fg bg-fg text-black' : 'border-line/50 hover:border-fg'
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+        {size && <p className="caps mt-2 text-muted">Fits {SIZE_GUIDE[size]}</p>}
+
+        <p className="caps mt-6 text-lg tracking-[0.06em]">Quantity</p>
+        <div className="mt-1 flex items-center gap-6 px-5 text-lg">
+          <button onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Decrease">-</button>
+          <span className="w-6 text-center">{qty}</span>
+          <button onClick={() => setQty(Math.min(10, qty + 1))} aria-label="Increase">+</button>
+        </div>
+
+        {error && <p className="caps mt-4 text-danger">{error}</p>}
+        <button onClick={addToCart} disabled={busy} className="btn-outline mt-5 py-2.5">
+          {busy ? 'Adding…' : 'Add to Cart'}
+        </button>
+
+        <p className="caps mt-6 text-lg tracking-[0.06em]">
+          <span className="font-bold">Ships:</span> Coming soon to your doorstep
+        </p>
+        <div className="mt-5 space-y-4 text-[13px] font-bold uppercase leading-relaxed tracking-[0.02em]">
+          <p>{product.description}</p>
+          <p>
+            Sizes: S (UK 3-5) · M (UK 6-8) · L (UK 9-11)
+            <br />
+            Free shipping. No payment needed right now.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -6,7 +6,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 const OUT = new URL('../public/products/', import.meta.url);
 mkdirSync(OUT, { recursive: true });
 
-// leg: where the sock starts (lower number = taller sock)
+// leg: where the sock starts (lower number = taller sock). bg is unused (transparent art).
 const socks = {
   'midnight-crew':             { bg: '#e9e6e1', base: '#1b1b1f', accent: '#f4f1ea', pattern: 'cuffStripe', leg: 130 },
   'varsity-stripe-crew':       { bg: '#dfe7ef', base: '#fbfbf8', accent: '#c8102e', accent2: '#1f3a8a', pattern: 'varsity', leg: 130 },
@@ -79,25 +79,24 @@ function sock(id, s) {
       <path d="M470 560 Q560 600 536 662 Q518 708 462 694 Q500 640 470 560 Z" fill="${s.accent}" opacity="0.85"/>
       <path d="M380 ${top} L380 470 Q380 515 420 540 L505 588" fill="none" stroke="#000" stroke-opacity="0.12" stroke-width="18"/>
     </g>
-    <path d="${sockPath(top)}" fill="none" stroke="#000" stroke-opacity="0.18" stroke-width="2"/>
+    <path d="${sockPath(top)}" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2.5"/>
   </g>`;
 }
 
-function svg(body, bg) {
+// Transparent background so the socks sit directly on the dark store theme.
+function svg(body) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 750" width="600" height="750">
-  <rect width="600" height="750" fill="${bg}"/>
-  <ellipse cx="380" cy="705" rx="190" ry="18" fill="#000" opacity="0.08"/>
+  <ellipse cx="380" cy="705" rx="190" ry="18" fill="#000" opacity="0.35"/>
   ${body}
 </svg>
 `;
 }
 
 for (const [slug, s] of Object.entries(socks)) {
-  const single = svg(sock('a', s), s.bg);
+  const single = svg(sock('a', s));
   const pair = svg(
     `<g transform="translate(-95 10) rotate(-6 300 400)">${sock('b', s)}</g>
      <g transform="translate(70 30) rotate(5 300 400)">${sock('c', s)}</g>`,
-    s.bg,
   );
   writeFileSync(new URL(`${slug}-1.svg`, OUT), single);
   writeFileSync(new URL(`${slug}-2.svg`, OUT), pair);

@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CloseIcon } from './Icons';
 
-const input =
-  'w-full border border-ink/20 bg-white px-4 py-3 text-sm outline-none focus:border-ink placeholder:text-muted/70';
-
 export default function AuthModal() {
   const { modalOpen, closeModal, login, signup } = useAuth();
   const [mode, setMode] = useState('login');
@@ -33,31 +30,21 @@ export default function AuthModal() {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-      <div className="animate-fade-in absolute inset-0 bg-black/60" onClick={closeModal} />
-      <div className="animate-fade-in relative w-full max-w-md bg-paper p-8 shadow-2xl">
-        <button onClick={closeModal} className="absolute right-4 top-4" aria-label="Close">
+      <div className="animate-fade-in absolute inset-0 bg-black/75" onClick={closeModal} />
+      <div className="animate-fade-in relative w-full max-w-md border border-line/50 bg-panel p-8">
+        <button onClick={closeModal} className="absolute right-4 top-4 hover:opacity-70" aria-label="Close">
           <CloseIcon />
         </button>
-        <h2 className="font-display text-4xl uppercase">{mode === 'login' ? 'Log In' : 'Create Account'}</h2>
-        <p className="mt-1 text-sm text-muted">
+        <h2 className="display text-2xl">{mode === 'login' ? 'Log In' : 'Create Account'}</h2>
+        <p className="caps mt-2 text-muted">
           {mode === 'login' ? 'Welcome back. Log in to place your order.' : 'Sign up in seconds to place your order.'}
         </p>
 
         <form onSubmit={submit} className="mt-6 flex flex-col gap-3">
-          {mode === 'signup' && (
-            <input className={input} placeholder="Full name" value={form.name} onChange={set('name')} required />
-          )}
+          {mode === 'signup' && <input className="field" placeholder="Full name" value={form.name} onChange={set('name')} required />}
+          <input className="field" type="email" placeholder="Email" autoComplete="email" value={form.email} onChange={set('email')} required />
           <input
-            className={input}
-            type="email"
-            placeholder="Email"
-            autoComplete="email"
-            value={form.email}
-            onChange={set('email')}
-            required
-          />
-          <input
-            className={input}
+            className="field"
             type="password"
             placeholder="Password"
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
@@ -66,19 +53,16 @@ export default function AuthModal() {
             onChange={set('password')}
             required
           />
-          {error && <p className="text-sm text-brand">{error}</p>}
-          <button
-            disabled={loading}
-            className="mt-2 bg-ink py-4 text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:bg-brand disabled:opacity-60"
-          >
+          {error && <p className="caps text-danger">{error}</p>}
+          <button disabled={loading} className="btn-solid mt-2">
             {loading ? 'Please wait…' : mode === 'login' ? 'Log In' : 'Sign Up'}
           </button>
         </form>
 
-        <p className="mt-5 text-center text-sm">
+        <p className="caps mt-6 text-center">
           {mode === 'login' ? 'New here? ' : 'Already have an account? '}
           <button
-            className="font-semibold underline hover:text-brand"
+            className="caps font-bold underline underline-offset-4 hover:opacity-70"
             onClick={() => {
               setMode(mode === 'login' ? 'signup' : 'login');
               setError('');

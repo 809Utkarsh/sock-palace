@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 750" width="600" height="750">
-  <rect width="600" height="750" fill="#ece5d8"/>
-  <ellipse cx="380" cy="705" rx="190" ry="18" fill="#000" opacity="0.08"/>
+  <ellipse cx="380" cy="705" rx="190" ry="18" fill="#000" opacity="0.35"/>
   <g transform="translate(-95 10) rotate(-6 300 400)">
   <defs><pattern id="b-p" width="80" height="120" patternUnits="userSpaceOnUse">
         <rect width="80" height="120" fill="#7b2d26"/><path d="M40 0 L80 60 L40 120 L0 60 Z" fill="#2c4a3e"/>
@@ -13,7 +12,7 @@
       <path d="M470 560 Q560 600 536 662 Q518 708 462 694 Q500 640 470 560 Z" fill="#d9b26f" opacity="0.85"/>
       <path d="M380 40 L380 470 Q380 515 420 540 L505 588" fill="none" stroke="#000" stroke-opacity="0.12" stroke-width="18"/>
     </g>
-    <path d="M220 40 L380 40 L380 470 Q380 515 420 540 L505 588 Q552 615 536 662 Q518 708 462 694 L300 645 Q220 620 220 545 Z" fill="none" stroke="#000" stroke-opacity="0.18" stroke-width="2"/>
+    <path d="M220 40 L380 40 L380 470 Q380 515 420 540 L505 588 Q552 615 536 662 Q518 708 462 694 L300 645 Q220 620 220 545 Z" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2.5"/>
   </g></g>
      <g transform="translate(70 30) rotate(5 300 400)">
   <defs><pattern id="c-p" width="80" height="120" patternUnits="userSpaceOnUse">
@@ -27,6 +26,6 @@
       <path d="M470 560 Q560 600 536 662 Q518 708 462 694 Q500 640 470 560 Z" fill="#d9b26f" opacity="0.85"/>
       <path d="M380 40 L380 470 Q380 515 420 540 L505 588" fill="none" stroke="#000" stroke-opacity="0.12" stroke-width="18"/>
     </g>
-    <path d="M220 40 L380 40 L380 470 Q380 515 420 540 L505 588 Q552 615 536 662 Q518 708 462 694 L300 645 Q220 620 220 545 Z" fill="none" stroke="#000" stroke-opacity="0.18" stroke-width="2"/>
+    <path d="M220 40 L380 40 L380 470 Q380 515 420 540 L505 588 Q552 615 536 662 Q518 708 462 694 L300 645 Q220 620 220 545 Z" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2.5"/>
   </g></g>
 </svg>

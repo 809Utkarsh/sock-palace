@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import AnnouncementBar from './components/AnnouncementBar';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
@@ -23,7 +22,6 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <AnnouncementBar />
       <Header />
       <main className="flex-1">
         <Routes>

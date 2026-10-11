@@ -1,23 +1,62 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-display: 'Anton', 'Impact', sans-serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --color-ink: #111111;
-  --color-paper: #f6f4ef;
-  --color-brand: #ff3d2e;
-  --color-muted: #6b6b6b;
+  --font-display: 'Cinzel', 'Georgia', serif;
+  --font-sans: 'Roboto', system-ui, sans-serif;
+  --color-bg: #0c140f;
+  --color-panel: #0f1912;
+  --color-fg: #ffffff;
+  --color-muted: #a9b3ab;
+  --color-line: rgba(255, 255, 255, 0.85);
+  --color-danger: #ff8a7a;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+/* Dark forest background with a warm glow and film grain. */
 body {
-  background: var(--color-paper);
-  color: var(--color-ink);
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 60% 50% at 15% 100%, rgba(120, 72, 18, 0.28), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 90% 0%, rgba(40, 80, 50, 0.25), transparent 70%);
+  background-attachment: fixed;
+  color: var(--color-fg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #fff;
+  color: #000;
+}
+
+@layer components {
+  /* Small uppercase body copy used across the store. */
+  .caps {
+    @apply text-[13px] uppercase tracking-[0.04em];
+  }
+  /* Wide serif heading style. */
+  .display {
+    @apply font-display font-extrabold uppercase tracking-[0.14em];
+  }
+  /* Thin white outlined button that inverts on hover. */
+  .btn-outline {
+    @apply flex w-full items-center justify-center border border-line px-6 py-2.5 font-display text-[13px] font-extrabold uppercase tracking-[0.18em] text-fg transition hover:bg-fg hover:text-black disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-solid {
+    @apply flex w-full items-center justify-center border border-fg bg-fg px-6 py-3 font-display text-[13px] font-extrabold uppercase tracking-[0.18em] text-black transition hover:bg-transparent hover:text-fg disabled:pointer-events-none disabled:opacity-50;
+  }
+  /* Rounded tag such as "LIMITED EDITION". */
+  .pill {
+    @apply inline-flex items-center rounded-full border border-fg px-2.5 py-0.5 font-display text-[11px] font-extrabold uppercase tracking-[0.12em] leading-4;
+  }
+  .field {
+    @apply w-full border border-line/60 bg-transparent px-4 py-3 text-sm text-fg outline-none placeholder:text-muted/70 focus:border-fg;
+  }
 }
 
 .no-scrollbar {
@@ -25,14 +64,6 @@ body {
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: marquee 30s linear infinite;
 }
 
 @keyframes slide-in {
